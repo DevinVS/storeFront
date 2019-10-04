@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../static/index.css">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div id="container">
+            <div id="header">
+                <a href="https://google.com">Header 1</a>
+                <a href="index.html">Header 2</a>
+                <a href="index.html">Header 3</a>
+                <a href="index.html">Header 4</a>
+            </div>
+            <div id="pageImg"></div>
+            <div id="title">Page Title</div>
+            <div id="content"></div>
+            <script>
+                let itemContainer = document.getElementById("content")
+
+                const Http = new XMLHttpRequest()
+                const url = "http://localhost:3000/api/products"
+                Http.open("GET", url)
+                Http.send()
+
+                Http.onreadystatechange=function(){
+                    if(this.readyState==4 && this.status==200){
+                        let data = JSON.parse(Http.responseText)
+                        populateItems(data)
+                    }
+                }
+
+                function currencyFormat(num) {
+                    return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+                    }
+
+                function populateItems(data){
+                    for(let i=0; i<data.length; i++){
+                        itemContainer.innerHTML += `
+                            <div class="item">
+                                <img src="/static/images/products/${data[i].imagePath}">
+                                <div class="info">
+                                    <div class="oneline">
+                                        <div>
+                                            <div class="product">${data[i].name}</div>
+                                            <div class="brand">${data[i].brand.name}</div>
+                                        </div>
+                                        <div class="price">${currencyFormat(data[i].price)}</div>
+                                    </div>
+                                </div>
+                            </div>`
+                    }
+                }
+
+            </script>
+            </div>
+        </div>
+    </body>
+</html>

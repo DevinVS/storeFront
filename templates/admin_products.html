@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="../static/admin.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css" />
+</head>
+
+<body onload="populate()">
+    <div id="container">
+        <div>
+            <h1>Products</h1>
+            <a href="/admin">Back</a>
+        </div>
+        <div id="newproduct">
+            Name: <input type="text" id="name" required><br><br>
+            Brand: <select id="brandselect"></select><br><br>
+            Price: <input type="text" id="price" required><br><br>
+            Category: <select id="catselect">
+                <option value="Mens">Mens</option>
+                <option value="Womens">Womens</option>
+            </select><br><br>
+            Image: <input type="file" name="file" id="file" class="inputfile" required />
+            <label for="file" class="filelabel" id="label">Choose a file</label>
+            Trending: <div class="pretty p-default p-curve"><input type="checkbox" id="trending" />
+                <div class="state"><label></label></div>
+            </div><br><br>
+            Description: <textarea id="description"></textarea><br><br>
+            <button id="submit" onclick="upload_submit()">Submit</button><br>
+            <p id="error"></p>
+        </div>
+
+        <table>
+            <tbody id="table">
+            </tbody>
+        </table>
+
+        <script>
+            const root = "http://localhost:3000/"
+
+            var inputs = document.querySelectorAll('.inputfile');
+            Array.prototype.forEach.call(inputs, function (input) {
+                var label = input.nextElementSibling,
+                    labelVal = label.innerHTML;
+
+                input.addEventListener('change', function (e) {
+                    var fileName = '';
+                    if (this.files && this.files.length > 1)
+                        fileName = (this.getAttribute('data-multiple-caption') || '').replace('{count}',
+                            this.files.length);
+                    else
+                        fileName = e.target.value.split('\\').pop()
+
+                    if (fileName)
+                        label.innerHTML = fileName
+                    else
+                        label.innerHTML = labelVal;
+                });
+            });
+
+            function populate() {
+                const Http = new XMLHttpRequest()
+                const url = root + "api/products"
+                Http.open("GET", url)
+                Http.send()
+
+                Http.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        let data = JSON.parse(Http.responseText)
+                        let table = document.getElementById("table")
+
+                        table.innerHTML = `
+                            <tr class="tableHeader">
+                                <td>Name</td>
+                                <td>Brand</td>
+                                <td>Price</td>
+                                <td>Category</td>
+                                <td>Trending</td>
+                                <td>Description</td>
+                                <td>Image</td>
+                                <td></td>
+                            </tr>`
+
+                        for (let i = 0; i < data.length; i++) {
+                            table.innerHTML += `
+                                    <tr>
+                                        <td>${data[i].name}</td>
+                                        <td>${data[i].brand.name}</td>
+                                        <td>${currencyFormat(data[i].price)}</td>
+                                        <td>${data[i].category}</td>
+                                        <td>${data[i].trending}</td>
+                                        <td>${data[i].description}</td>
+                                        <td><img src="/static/images/products/${data[i].imagePath}"></td>
+                                        <td><button onclick="deleteProduct(${data[i].id})">Delete</button></td>
+                                    </tr>`
+                        }
+                    }
+                }
+
+                const Http2 = new XMLHttpRequest()
+                const url2 = root + 'api/brands'
+                Http2.open("GET", url2)
+                Http2.send()
+
+                Http2.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        let data = JSON.parse(Http2.responseText)
+                        let select = document.getElementById("brandselect")
+                        select.innerHTML = ""
+
+                        for (let i = 0; i < data.length; i++) {
+                            select.innerHTML += `<option value="${data[i].id}">${data[i].name}</option>`
+                        }
+                    }
+                }
+            }
+
+            function upload_submit() {
+
+                if (validate()) {
+                    const Http = new XMLHttpRequest()
+                    const url = root + "api/images"
+                    let formData = new FormData()
+                    formData.append("file", document.getElementById("file").files[0])
+
+                    Http.open("POST", url)
+                    Http.send(formData)
+
+                    Http.onreadystatechange = function () {
+                        if (this.readyState == 4 && this.status == 200) {
+                            let data = JSON.parse(Http.responseText)
+                            submit(data.filePath)
+                        }
+                    }
+                }
+            }
+
+            function submit(filePath) {
+                const Http = new XMLHttpRequest()
+                const url = root + "api/product/0"
+                let body = {
+                    name: document.getElementById("name").value,
+                    brandID: document.getElementById("brandselect").value,
+                    price: document.getElementById("price").value,
+                    imagePath: filePath,
+                    trending: document.getElementById("trending").checked,
+                    description: document.getElementById("description").value,
+                    category: document.getElementById("catselect").value
+                }
+
+                Http.open("POST", url)
+                Http.send(JSON.stringify(body))
+
+                document.getElementById("name").value = ""
+                document.getElementById("price").value = ""
+                document.getElementById("trending").checked = false
+                document.getElementById("description").value = ""
+                document.getElementById("file").value = ""
+                document.getElementById("label").innerText = "Choose a file"
+
+                Http.onreadystatechange = function () {
+                    populate()
+                }
+            }
+
+            function validate() {
+                if (
+                    document.getElementById("name").value == "" ||
+                    document.getElementById("price").value == "" ||
+                    document.getElementById("file").files.length == 0
+                ) {
+                    document.getElementById("error").innerText = "Please complete the form"
+                    return false;
+                } else {
+                    document.getElementById("error").innerText = ""
+                    return true;
+                }
+            }
+
+            function deleteProduct(id) {
+                const Http = new XMLHttpRequest()
+                const url = root + "api/product/" + id
+                Http.open("DELETE", url)
+                Http.send()
+                populate()
+            }
+
+            function currencyFormat(num) {
+                return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+            }
+        </script>
+    </div>
+</body>
+
+</html>

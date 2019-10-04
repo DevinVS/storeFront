@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/static/admin.css">
+    </head>
+    <body onload="populate()">
+        <div id="container">
+                <div>
+                    <h1>Outfits</h1>
+                    <a href="/admin">Back</a>
+                </div>
+                <div id="newoutfit">
+                    Name: <input type="text" id="name"><br><br>
+                    <select id="productselect"></select>
+                    <button onclick="addProduct()">+</button><br><br>
+                    <button onclick="submit()">Submit</button><br><br>
+                    <div id="newproducts">
+
+                    </div>
+                </div>
+                <table>
+                    <tbody id="table">
+                        
+                    </tbody>
+                </table>
+        </div>
+        <script>
+            const root = "http://localhost:3000/"
+            let products = []
+            
+            function populate(){
+                const Http = new XMLHttpRequest()
+                const url = root + "api/products"
+                Http.open("GET", url)
+                Http.send()
+
+                Http.onreadystatechange = function(){
+                    if(this.readyState==4 && this.status==200){
+                        let data = JSON.parse(Http.responseText)
+                        let select = document.getElementById("productselect")
+                        select.innerHTML = ""
+
+                        for (let i=0; i<data.length; i++){
+                            select.innerHTML += `<option value="${data[i].id}">${data[i].name}</option>`
+                        }
+                    }
+                }
+
+                const Http2 = new XMLHttpRequest()
+                const url2 = root + "api/outfits"
+                Http2.open("GET", url2)
+                Http2.send()
+
+                Http2.onreadystatechange = function(){
+                    if(this.readyState==4 && this.status==200){
+                        let data2 = JSON.parse(Http2.responseText)
+                        let table = document.getElementById("table")
+                        table.innerHTML = `
+                            <tr class="tableHeader">
+                                <td>Name</td>
+                                <td>Items</td>
+                            </tr>`
+
+                        for (let i=0; i<data2.length; i++){
+                            table.innerHTML += `
+                                <tr>
+                                    <td>${data2[i].name}</td>
+                                    <td>${data2[i].items.map(x => x.product.name).join(", ")}</td>
+                                    <td><button onclick="deleteOutfit(${data2[i].id})">Delete</button>
+                                </tr>`
+                        }
+                    }
+                }
+            }
+
+            function addProduct(){
+                let id = document.getElementById("productselect").value
+
+                const Http = new XMLHttpRequest()
+                const url = root + "api/product/" + id
+                Http.open("GET", url)
+                Http.send()
+
+                Http.onreadystatechange = function(){
+                    if(this.readyState==4 && this.status==200){
+                        let data = JSON.parse(Http.responseText)
+                        products.push(data.id)
+                        document.getElementById("newproducts").innerHTML += `<p>${data.name}</p>`
+                    }
+                }
+            }
+
+            function submit(){
+
+                const Http = new XMLHttpRequest()
+                const url = root + 'api/outfit/1'
+
+                const body = {
+                    name: document.getElementById("name").value,
+                    productIDs: products
+                }
+
+                Http.open("POST", url)
+                Http.send(JSON.stringify(body))
+
+                Http.onreadystatechange = function(){
+                    populate()
+                }
+            }
+
+            function deleteOutfit(id){
+                const Http = new XMLHttpRequest()
+                const url = root + "api/outfit/" + id
+                Http.open("DELETE", url)
+                Http.send()
+
+                Http.onreadystatechange = function(){
+                    populate()
+                }
+            }
+
+
+        </script>
+    </body>
+</html>

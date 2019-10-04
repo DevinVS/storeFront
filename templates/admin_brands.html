@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Brands</title>
+    <link rel="stylesheet" type="text/css" href="../static/admin.css">
+</head>
+
+<body onload="populate()">
+    <div id="container">
+        <div>
+            <h1>Brands</h1>
+            <a href="/admin">Back</a>
+        </div>
+        <div id="newproduct">
+            Add: <input type="text" name="name" id="name" onkeypress="if(event.keyCode==13){submit()}">
+            <button name="submit" onclick="submit()">Submit</button>
+        </div>
+        <br />
+        <table>
+            <tbody id="table">
+            </tbody>
+        </table>
+
+        <script>
+            const root = "http://localhost:3000/"
+
+
+            function submit() {
+                const Http = new XMLHttpRequest()
+                const url = root + "api/brand/1"
+                const body = {
+                    name: document.getElementById("name").value
+                }
+
+                Http.open("POST", url)
+                Http.send(JSON.stringify(body))
+                document.getElementById("name").value = ""
+
+                Http.onreadystatechange = function () {
+                    populate()
+                }
+
+            }
+
+            function deleteBrand(id) {
+                const Http = new XMLHttpRequest()
+                const url = root + "api/brand/" + id
+                Http.open("DELETE", url)
+                Http.send()
+                populate()
+            }
+
+            function populate() {
+                const Http = new XMLHttpRequest()
+                const url = root + "api/brands"
+                Http.open("GET", url)
+                Http.send()
+
+                Http.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        let table = document.getElementById("table")
+                        table.innerHTML = `
+                                <tr class="tableHeader">
+                                    <td>Brand Name</td>
+                                    <td></td>
+                                </tr>`
+
+                        let data = JSON.parse(this.responseText)
+                        for (let i = 0; i < data.length; i++) {
+                            table.innerHTML += `
+                                    <tr>
+                                        <td>${data[i].name}</td>
+                                        <td><button onclick="deleteBrand(${data[i].id})">Delete</button></td>
+                                    </tr>`
+                        }
+                    }
+                }
+            }
+        </script>
+
+        <div id="products">
+
+        </div>
+    </div>
+</body>
+
+</html>
