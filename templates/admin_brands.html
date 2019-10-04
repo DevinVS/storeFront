@@ -48,7 +48,10 @@
                 const url = root + "api/brand/" + id
                 Http.open("DELETE", url)
                 Http.send()
-                populate()
+                
+                Http.onreadystatechange = function(){
+                    populate()
+                }
             }
 
             function populate() {
