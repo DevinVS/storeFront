@@ -7,7 +7,7 @@ import hashlib
 import os
 import random
 import string
-
+from tornado_sqlalchemy import as_future, make_session_factory, SessionMixin
 
 
 class Main(tornado.web.RequestHandler):
@@ -16,212 +16,244 @@ class Main(tornado.web.RequestHandler):
         self.render("templates/index.html")
 
 
-class Products(tornado.web.RequestHandler):
+class Products(SessionMixin, tornado.web.RequestHandler):
 
     def prepare(self):
         self.set_header("Content-Type", "application/json")
 
     def get(self):
-        products = db.get_products()
-        self.write(json.dumps([x.to_dict() for x in products]))
+        with self.make_session() as session:
+            products = db.get_products(session)
+            self.write(json.dumps([x.to_dict() for x in products]))
 
 
-class Product(tornado.web.RequestHandler):
+class Product(SessionMixin, tornado.web.RequestHandler):
 
     def prepare(self):
         self.set_header("Content-Type", "application/json")
 
     def get(self, id):
-        product = db.get_product(id)
-        self.write(json.dumps(product.to_dict()))
+        with self.make_session() as session:
+            product = db.get_product(session, id)
+            self.write(json.dumps(product.to_dict()))
 
     def post(self, _):
-        data = json.loads(self.request.body)
+        with self.make_session() as session:
+            data = json.loads(self.request.body)
         
-        db.new_product(
-            name=data["name"],
-            brandID=data["brandID"],
-            price=data["price"],
-            description=data["description"],
-            image_path=data["imagePath"],
-            trending=data["trending"],
-            category=data["category"]
-        )
-        self.write(json.dumps({"message":"success"}))
+            db.new_product(
+                session,
+                name=data["name"],
+                brandID=data["brandID"],
+                price=data["price"],
+                description=data["description"],
+                image_path=data["imagePath"],
+                trending=data["trending"],
+                category=data["category"]
+            )
+            self.write(json.dumps({"message":"success"}))
 
     def put(self, id):
-        data = json.loads(self.request.body)
+        with self.make_session() as session:
+            data = json.loads(self.request.body)
 
-        db.update_product(
-            id, 
-            name=data["name"],
-            brandID=data["brandID"],
-            price=data["price"],
-            description=data["description"],
-            image_path=data["imagePath"],
-            trending=data["trending"],
-            category=data["category"]
-        )
-        self.write(json.dumps({"message":"success"}))
+            db.update_product(
+                session,
+                id, 
+                name=data["name"],
+                brandID=data["brandID"],
+                price=data["price"],
+                description=data["description"],
+                image_path=data["imagePath"],
+                trending=data["trending"],
+                category=data["category"]
+            )
+            self.write(json.dumps({"message":"success"}))
 
     def patch(self, id):
-        data = json.loads(self.request.body)
-        db.update_product(id, **data)
-        self.write(json.dumps({"message":"success"}))
+        with self.make_session() as session:
+            data = json.loads(self.request.body)
+            db.update_product(session, id, **data)
+            self.write(json.dumps({"message":"success"}))
 
     def delete(self, id):
-        db.delete_product(id)
-        self.write(json.dumps({"message":"success"}))
+        with self.make_session() as session:
+            db.delete_product(session, id)
+            self.write(json.dumps({"message":"success"}))
 
 
-class Brands(tornado.web.RequestHandler):
+class Brands(SessionMixin, tornado.web.RequestHandler):
 
     def prepare(self):
         self.set_header("Content-Type", "application/json")
 
     def get(self):
-        brands = db.get_brands()
-        self.write(json.dumps([x.to_dict() for x in brands]))
+        with self.make_session() as session:
+            brands = db.get_brands(session)
+            self.write(json.dumps([x.to_dict() for x in brands]))
 
 
-class Brand(tornado.web.RequestHandler):
+class Brand(SessionMixin, tornado.web.RequestHandler):
 
     def prepare(self):
         self.set_header("Content-Type", "application/json")
 
     def get(self, id):
-        brand = db.get_brand(id)
-        self.write(json.dumps(brand.to_dict()))
+        with self.make_session() as session:
+            brand = db.get_brand(session, id)
+            self.write(json.dumps(brand.to_dict()))
 
     def post(self, _):
-        data = json.loads(self.request.body)
-        db.new_brand(
-            name=data["name"]
-        )
-        self.write(json.dumps({"message":"success"}))
+        with self.make_session() as session:
+            data = json.loads(self.request.body)
+            db.new_brand(
+                session,
+                name=data["name"]
+            )
+            self.write(json.dumps({"message":"success"}))
 
     def put(self, id):
-        data = json.loads(self.request.body)
-        db.update_brand(
-            id,
-            name=data["name"],
-            logo_path=data["logoPath"]
-        )
-        self.write(json.dumps({"message":"success"}))
+        with self.make_session() as session:
+            data = json.loads(self.request.body)
+            db.update_brand(
+                session,
+                id,
+                name=data["name"],
+                logo_path=data["logoPath"]
+            )
+            self.write(json.dumps({"message":"success"}))
 
     def patch(self, id):
-        data = json.loads(self.request.body)
-        db.update_brand(id, **data)
-        self.write(json.dumps({"message":"success"}))
+        with self.make_session() as session:
+            data = json.loads(self.request.body)
+            db.update_brand(session, id, **data)
+            self.write(json.dumps({"message":"success"}))
 
     def delete(self, id):
-        db.delete_brand(id)
-        self.write(json.dumps({"message":"success"}))
+        with self.make_session() as session:
+            db.delete_brand(session, id)
+            self.write(json.dumps({"message":"success"}))
 
 
-class Outfits(tornado.web.RequestHandler):
+class Outfits(SessionMixin, tornado.web.RequestHandler):
 
     def prepare(self):
         self.set_header("Content-Type", "application/json")
 
     def get(self):
-        outfits = db.get_outfits()
-        self.write(json.dumps([x.to_dict() for x in outfits]))
+        with self.make_session() as session:
+            outfits = db.get_outfits(session)
+            self.write(json.dumps([x.to_dict() for x in outfits]))
 
 
-class Outfit(tornado.web.RequestHandler):
+class Outfit(SessionMixin, tornado.web.RequestHandler):
 
     def prepare(self):
         self.set_header("Content-Type", "application/json")
 
     def get(self, id):
-        outfit = db.get_outfit(id)
-        self.write(outfit.to_dict())
+        with self.make_session() as session:
+            outfit = db.get_outfit(session, id)
+            self.write(outfit.to_dict())
 
     def post(self, _):
-        data = json.loads(self.request.body)
+        with self.make_session() as session:
+            data = json.loads(self.request.body)
 
-        db.new_outfit(
-            name=data["name"],
-            product_ids=data["productIDs"]
-        )
-        self.write(json.dumps({"message":"success"}))
+            db.new_outfit(
+                session,
+                name=data["name"],
+                product_ids=data["productIDs"]
+            )
+            self.write(json.dumps({"message":"success"}))
 
     def put(self, id):
-        data = json.loads(self.request.body)
-        db.update_outfit(
-            id,
-            name=data["name"],
-            product_ids=data["productIDs"]
-        )
-        self.write(json.dumps({"message":"success"}))
+        with self.make_session() as session:
+            data = json.loads(self.request.body)
+            db.update_outfit(
+                session,
+                id,
+                name=data["name"],
+                product_ids=data["productIDs"]
+            )
+            self.write(json.dumps({"message":"success"}))
 
     def patch(self, id):
-        data = json.loads(self.request.body)
-        db.update_outfit(id, **data)
-        self.write(json.dumps({"message":"success"}))
+        with self.make_session() as session:
+            data = json.loads(self.request.body)
+            db.update_outfit(session, id, **data)
+            self.write(json.dumps({"message":"success"}))
 
     def delete(self, id):
-        db.delete_outfit(id)
-        self.write(json.dumps({"message":"success"}))
+        with self.make_session() as session:
+            db.delete_outfit(session, id)
+            self.write(json.dumps({"message":"success"}))
 
 
-class Orders(tornado.web.RequestHandler):
+class Orders(SessionMixin, tornado.web.RequestHandler):
 
     def prepare(self):
         self.set_header("Content-Type", "application/json")
 
     def get(self):
-        orders = db.get_orders()
-        self.write(json.dumps([x.to_dict() for x in orders]))
+        with self.make_session() as session:
+            orders = db.get_orders(session)
+            self.write(json.dumps([x.to_dict() for x in orders]))
 
 
-class Order(tornado.web.RequestHandler):
+class Order(SessionMixin, tornado.web.RequestHandler):
 
     def prepare(self):
         self.set_header("Content-Type", "application/json")
 
     def get(self, id):
-        order = db.get_order(id)
-        self.write(json.dumps(order.to_dict()))
+        with self.make_session() as session:
+            order = db.get_order(session, id)
+            self.write(json.dumps(order.to_dict()))
 
     def post(self, _):
-        data = json.loads(self.request.body)
+        with self.make_session() as session:
+            data = json.loads(self.request.body)
 
-        db.new_order(
-            first_name=data["firstName"],
-            last_name=data["lastName"],
-            address_line_1=data["addressLine1"],
-            address_line_2=data["addressLine2"],
-            city=data["city"],
-            state=data["state"], 
-            zipcode=data["zipcode"],
-            product_ids=data["productIDs"]
-        )
-        self.write(json.dumps({"message":"success"}))
+            db.new_order(
+                session,
+                first_name=data["firstName"],
+                last_name=data["lastName"],
+                address_line_1=data["addressLine1"],
+                address_line_2=data["addressLine2"],
+                city=data["city"],
+                state=data["state"], 
+                zipcode=data["zipcode"],
+                product_ids=data["productIDs"]
+            )
+            self.write(json.dumps({"message":"success"}))
 
     def put(self, id):
-        data = json.loads(self.request.body)
-        db.update_order(
-            id,
-            first_name=data["firstName"],
-            last_name=data["lastName"],
-            address_line_1=data["addressLine1"],
-            address_line_2=data["addressLine2"],
-            city=data["city"],
-            state=data["state"], 
-            zipcode=data["zipcode"],
-            product_ids=data["productIDs"]
-        )
-        self.write(json.dumps({"message":"success"}))
+        with self.make_session() as session:
+            data = json.loads(self.request.body)
+            db.update_order(
+                session,
+                id,
+                first_name=data["firstName"],
+                last_name=data["lastName"],
+                address_line_1=data["addressLine1"],
+                address_line_2=data["addressLine2"],
+                city=data["city"],
+                state=data["state"], 
+                zipcode=data["zipcode"],
+                product_ids=data["productIDs"]
+            )
+            self.write(json.dumps({"message":"success"}))
 
     def patch(self, id):
-        data = json.loads(self.request.body)
-        db.update_order(id, **data)
+        with self.make_session() as session:
+            data = json.loads(self.request.body)
+            db.update_order(session, id, **data)
 
     def delete(self, id):
-        db.delete_order(id)
-        self.write(json.dumps({"message":"success"}))
+        with self.make_session() as session:
+            db.delete_order(session, id)
+            self.write(json.dumps({"message":"success"}))
 
 
 class ImageHandler(tornado.web.RequestHandler):
@@ -291,7 +323,8 @@ class Application(tornado.web.Application):
         ]
         settings = dict(
             static_path=os.path.join(os.path.dirname(__file__), "static"),
-            debug=True
+            debug=True,
+            session_factory=make_session_factory('mysql+mysqldb://store:store@localhost/store')
         )
         super(Application, self).__init__(handlers, **settings)
 

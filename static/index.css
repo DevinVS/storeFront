@@ -75,6 +75,11 @@ a{
     border-radius: 20px;
     border: 1px solid #FF715B;
     overflow: hidden;
+    box-shadow: 2px 2px 5px lightgray;
+}
+
+.item:hover{
+    cursor: pointer;
     
 }
 
