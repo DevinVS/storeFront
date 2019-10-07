@@ -102,6 +102,13 @@
                 Http2.open("GET", url2)
                 Http2.send()
 
+                document.getElementById("name").value = ""
+                document.getElementById("price").value = ""
+                document.getElementById("trending").checked = false
+                document.getElementById("description").value = ""
+                document.getElementById("file").value = ""
+                document.getElementById("label").innerText = "Choose a file"
+
                 Http2.onreadystatechange = function () {
                     if (this.readyState == 4 && this.status == 200) {
                         let data = JSON.parse(Http2.responseText)
@@ -150,13 +157,6 @@
 
                 Http.open("POST", url)
                 Http.send(JSON.stringify(body))
-
-                document.getElementById("name").value = ""
-                document.getElementById("price").value = ""
-                document.getElementById("trending").checked = false
-                document.getElementById("description").value = ""
-                document.getElementById("file").value = ""
-                document.getElementById("label").innerText = "Choose a file"
 
                 Http.onreadystatechange = function () {
                     populate()
