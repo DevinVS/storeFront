@@ -15,7 +15,9 @@
             </div>
             <div id="pageImg"></div>
             <div id="title">Page Title</div>
-            <div id="content"></div>
+            
+            <div id="content">
+            </div>
             <script>
                 let itemContainer = document.getElementById("content")
 
@@ -38,9 +40,10 @@
                 function populateItems(data){
                     for(let i=0; i<data.length; i++){
                         itemContainer.innerHTML += `
-                            <div class="item">
+                            <div class="item" id="product${data[i].id}">
                                 <img src="/static/images/products/${data[i].imagePath}">
                                 <div class="info">
+                                    <img src="/static/images/up-arrow-svgrepo-com (1).svg" onclick="toggleCard(${data[i].id})">
                                     <div class="oneline">
                                         <div>
                                             <div class="product">${data[i].name}</div>
@@ -48,11 +51,26 @@
                                         </div>
                                         <div class="price">${currencyFormat(data[i].price)}</div>
                                     </div>
+                                    <br>
+                                    <div class="description hidden" id="productDescription${data[i].id}">${data[i].description}</div>
+                                    <button class="buy">Buy Now</button>
                                 </div>
                             </div>`
                     }
                 }
 
+                function toggleCard(id){
+                    let card = document.getElementById("product" + id)
+                    let description = document.getElementById("productDescription" + id)
+
+                    if(card.className == "item"){
+                        card.className = "item expanded"
+                        description.className = "description"  
+                    }else{
+                        card.className = "item"
+                        description.className = "description hidden"
+                    }
+                }
             </script>
             </div>
         </div>
