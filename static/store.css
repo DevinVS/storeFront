@@ -6,9 +6,7 @@
     color: #3F403F;
 }
 
-body{
-    background-color: #DCE0D9;
-}
+
 
 a{
     text-decoration: none;
@@ -17,6 +15,12 @@ a{
 #container{
     display: flex;
     flex-direction: column;
+}
+
+#logo{
+    height:50px;
+    position: fixed;
+    width: 50px;
 }
 
 #header{
@@ -32,10 +36,19 @@ a{
 
 #header a{
     color: white;
-    font-size: 30px;
+    font-size: 50px;
     font-family: sans-serif;
     text-decoration: none;
     width: 100%;
+    align-self: center;
+    text-align: center;
+    font-family: 'Staatliches', cursive;
+}
+
+#header a svg{
+    height: 100px;
+    align-self: center;
+    fill: white;
 }
 
 #pageImg{

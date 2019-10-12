@@ -1,0 +1,150 @@
+*{
+    padding: 0;
+    margin: 0;
+    border: none;
+    box-sizing: border-box;
+    color: #3F403F;
+}
+
+html {
+    scroll-behavior: smooth;
+  }
+  
+body{
+    background-color: lemonchiffon;
+    margin: none;
+    padding: none;
+    width: 100vw;
+    overflow-x:hidden
+}
+
+
+a{
+    text-decoration: none;
+}
+
+#container{
+    display: flex;
+    flex-direction: column;
+}
+
+
+#header{
+    height: 10vh;
+    width: 100vw;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 5rem 10vw;
+    z-index: 1;
+}
+
+#header a{
+    font-size: 50px;
+    text-decoration: none;
+    width: 100%;
+    align-self: center;
+    font-family: 'Staatliches', sans-serif;
+    text-align: center;
+}
+
+#header a:hover{
+    text-decoration: underline;
+}
+
+#split{
+    display: flex;
+    flex-direction: row;
+    height:80vh;
+    width:100vw;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#split div{
+    font-family: 'Staatliches', sans-serif;
+    font-size: 5em;
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+#split div button{
+    font-family: sans-serif;
+    font-size: 20px;
+    background: none;
+    outline:none !important;
+}
+
+#split div button:hover{
+    cursor: pointer;
+    
+}
+
+#logo{
+    width: 30vw;
+    justify-self: baseline;
+    position: relative;
+}
+
+#about{
+    background-color: white; 
+    height: 60vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-content: center;
+    text-align: center;
+    padding: 5% 0;
+}
+
+#abouttext{
+    word-wrap: break-word;
+    padding: 5%;
+    width:60vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#aboutimage{
+    width:40vw;
+    background-image: url('/static/images/tshirts.jpg');
+    background-size: cover;
+    background-position: 50% 50%;
+    border-radius: 10px;
+}
+
+#about h3{
+    font-family: 'Staaliches', sans-serif;
+    font-size: 3em;
+}
+
+#about p{
+    font-family: sans-serif;
+    font-size: 1em;
+}
+
+#buttonimg{
+    -webkit-transform:rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
+    height: 20px;
+}
+
+#footer{
+    width:100vw;
+    height:6vh;
+    background-color: #3F403F;
+    text-align: center;
+    vertical-align: center;
+    color: white;
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    justify-items: center;
+    align-items: center;
+}

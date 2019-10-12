@@ -1,78 +1,52 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" type="text/css" href="../static/index.css">
-
+        <title>Branded | Home</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="../static/home.css">
+        <link href="https://fonts.googleapis.com/css?family=Staatliches&display=swap" rel="stylesheet">
     </head>
     <body>
         <div id="container">
             <div id="header">
-                <a href="https://google.com">Header 1</a>
-                <a href="index.html">Header 2</a>
-                <a href="index.html">Header 3</a>
-                <a href="index.html">Header 4</a>
+                <a href="mens">Mens</a>
+                <a href="womens">Womens</a>
+                <a href="trending">Trending</a>
+                <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Sales</a>
             </div>
-            <div id="pageImg"></div>
-            <div id="title">Page Title</div>
-            
-            <div id="content">
+            <div id="split">
+                <div>
+                    <h3>Your Favorite Brands.</h3>
+                    <h3>One Stop.</h3>
+                    <button onclick="scrollToAbout()">
+                        Learn More <img id="buttonimg" src="/static/images/up-arrow-svgrepo-com (1).svg">
+                    </button>
+                </div>
+                <div>
+                    <img id="logo" src="../static/images/icon.svg">
+                </div>
             </div>
-            <script>
-                let itemContainer = document.getElementById("content")
+            <div id="about">
+                    <div id="aboutimage">
 
-                const Http = new XMLHttpRequest()
-                const url = "http://localhost:3000/api/products"
-                Http.open("GET", url)
-                Http.send()
-
-                Http.onreadystatechange=function(){
-                    if(this.readyState==4 && this.status==200){
-                        let data = JSON.parse(Http.responseText)
-                        populateItems(data)
-                    }
-                }
-
-                function currencyFormat(num) {
-                    return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-                    }
-
-                function populateItems(data){
-                    for(let i=0; i<data.length; i++){
-                        itemContainer.innerHTML += `
-                            <div class="item" id="product${data[i].id}">
-                                <img src="/static/images/products/${data[i].imagePath}">
-                                <div class="info">
-                                    <img src="/static/images/up-arrow-svgrepo-com (1).svg" onclick="toggleCard(${data[i].id})">
-                                    <div class="oneline">
-                                        <div>
-                                            <div class="product">${data[i].name}</div>
-                                            <div class="brand">${data[i].brand.name}</div>
-                                        </div>
-                                        <div class="price">${currencyFormat(data[i].price)}</div>
-                                    </div>
-                                    <br>
-                                    <div class="description hidden" id="productDescription${data[i].id}">${data[i].description}</div>
-                                    <button class="buy">Buy Now</button>
-                                </div>
-                            </div>`
-                    }
-                }
-
-                function toggleCard(id){
-                    let card = document.getElementById("product" + id)
-                    let description = document.getElementById("productDescription" + id)
-
-                    if(card.className == "item"){
-                        card.className = "item expanded"
-                        description.className = "description"  
-                    }else{
-                        card.className = "item"
-                        description.className = "description hidden"
-                    }
-                }
-            </script>
+                        </div>
+                <div id="abouttext">
+                    <h3>About Us</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>        
+                </div>
+                
+            </div>
+            <div id="footer">
+                Legal stuff probably goes here.
             </div>
         </div>
+        <script>
+            function scrollToAbout(){
+                document.getElementById('about').scrollIntoView({
+                    behavior: "smooth"
+                })
+            }
+        
+        </script>
     </body>
 </html>

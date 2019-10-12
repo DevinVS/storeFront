@@ -15,6 +15,23 @@ class Main(tornado.web.RequestHandler):
     def get(self):
         self.render("templates/index.html")
 
+class Mens(tornado.web.RequestHandler):
+
+    def get(self):
+        self.render("templates/mens.html")
+
+
+class Womens(tornado.web.RequestHandler):
+
+    def get(self):
+        self.render("templates/womens.html")
+
+
+class Trending(tornado.web.RequestHandler):
+
+    def get(self):
+        self.render("templates/trending.html")
+
 
 class Products(SessionMixin, tornado.web.RequestHandler):
 
@@ -306,6 +323,9 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r'/', Main),
+            (r'/mens', Mens),
+            (r'/womens', Womens),
+            (r'/trending', Trending),
             (r'/api/products', Products),
             (r'/api/product/([^/]+)?', Product),
             (r'/api/brands', Brands),
