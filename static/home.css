@@ -89,13 +89,14 @@ a{
 
 #about{
     background-color: floralwhite;
-    height: 60vh;
+    height: 80vh;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     align-content: center;
     text-align: center;
     padding: 5% 0 5% 2%;
+    overflow: hidden;
 }
 
 #abouttext{
@@ -104,15 +105,11 @@ a{
     width:60vw;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-around;
 }
 
 #aboutimage{
-    width:40vw;
-    background-image: url('/static/images/tshirts.jpg');
-    background-size: cover;
-    background-position: 50% 50%;
-    border-radius: 10px;
+    width:30vw;
 }
 
 #about h3{
