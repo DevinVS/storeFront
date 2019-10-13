@@ -88,14 +88,14 @@ a{
 }
 
 #about{
-    background-color: white; 
+    background-color: floralwhite;
     height: 60vh;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     align-content: center;
     text-align: center;
-    padding: 5% 0;
+    padding: 5% 0 5% 2%;
 }
 
 #abouttext{
@@ -116,13 +116,13 @@ a{
 }
 
 #about h3{
-    font-family: 'Staaliches', sans-serif;
+    font-family: 'Staatliches', sans-serif;
     font-size: 3em;
 }
 
 #about p{
-    font-family: sans-serif;
-    font-size: 1em;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.5em;
 }
 
 #buttonimg{
@@ -140,7 +140,7 @@ a{
     background-color: #3F403F;
     text-align: center;
     vertical-align: center;
-    color: white;
+    color: lemonchiffon;
     font-family: sans-serif;
     display: flex;
     justify-content: center;

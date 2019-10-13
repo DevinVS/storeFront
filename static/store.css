@@ -6,11 +6,10 @@
     color: #3F403F;
 }
 
-
-
 a{
     text-decoration: none;
 }
+
 
 #container{
     display: flex;
@@ -43,6 +42,11 @@ a{
     align-self: center;
     text-align: center;
     font-family: 'Staatliches', cursive;
+}
+
+#header a:hover{
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 #header a svg{
